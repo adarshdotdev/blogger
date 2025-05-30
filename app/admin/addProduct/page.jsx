@@ -78,7 +78,7 @@ const page = () => {
                 <select onChange={onChangeHandler} value={data.category} className='w-40 mt-4 px-4 py-3 border text-gray-500' name="category">
                     <option value="Startup">Startup</option>
                     <option value="Technology">Technology</option>
-                    <option value="LIfestyle">Lifestyle</option>
+                    <option value="Lifestyle">Lifestyle</option>
                 </select>
                 <br />
                 <button className='mt-8 w-40 h-12 bg-black text-white' type='submit'>ADD</button>
