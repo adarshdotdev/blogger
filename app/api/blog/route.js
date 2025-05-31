@@ -1,66 +1,66 @@
 import { ConnectDB } from "@/lib/config/db"
-import {writeFile} from "fs/promises"
+import { writeFile } from "fs/promises"
 const { NextResponse } = require("next/server")
 import BlogModel from "@/lib/models/BlogModel"
 const fs = require('fs')
 
 const LoadDB = async () => {
-    await ConnectDB()
+  await ConnectDB()
 }
 
 LoadDB()
 
 // API Endpoint to get all blogs
-export async function GET(req){
+export async function GET(req) {
 
-    const blogId = req.nextUrl.searchParams.get("id")
+  const blogId = req.nextUrl.searchParams.get("id")
 
-    if(blogId){
-        const blog = await BlogModel.findById(blogId)
+  if (blogId) {
+    const blog = await BlogModel.findById(blogId)
 
-        return NextResponse.json(blog)
-    }else{
+    return NextResponse.json(blog)
+  } else {
 
-        const blogs = await BlogModel.find({})
-        return NextResponse.json({blogs})
-    }
+    const blogs = await BlogModel.find({})
+    return NextResponse.json({ blogs })
+  }
 
-     
-     
+
+
 }
 
 // API endpoint to upload blogs
-export async function POST(req){
-    
-    const formData = await req.formData()
+export async function POST(req) {
 
-    const timestamp = Date.now()
+  const formData = await req.formData()
 
-    const image = formData.get("image")
-    const imageByteData = await image.arrayBuffer()
-    const buffer = Buffer.from(imageByteData)
-    const path = `./public/${timestamp}_${image.name}`
+  const timestamp = Date.now()
 
-    await writeFile(path, buffer)
+  const image = formData.get("image")
+  const imageByteData = await image.arrayBuffer()
+  const buffer = Buffer.from(imageByteData)
+  const path = `./public/${timestamp}_${image.name}`
 
-    const imgUrl = `/${timestamp}_${image.name}`
+  await writeFile(path, buffer)
 
-    const blogData = {
-        title:`${formData.get("title")}`,
-        description:`${formData.get("description")}`,
-        category:`${formData.get("category")}`,
-        author:`${formData.get("author")}`,
-        image:`${imgUrl}`,
-        authorImage:`${formData.get("authorImg")}`
+  const imgUrl = `/${timestamp}_${image.name}`
 
-    }
+  const blogData = {
+    title: `${formData.get("title")}`,
+    description: `${formData.get("description")}`,
+    category: `${formData.get("category")}`,
+    author: `${formData.get("author")}`,
+    image: `${imgUrl}`,
+    authorImage: `${formData.get("authorImg")}`
 
-    await BlogModel.create(blogData)
-    console.log("Blog Saved")
+  }
 
-    console.log(imgUrl)
+  await BlogModel.create(blogData)
+  console.log("Blog Saved")
 
-    return NextResponse.json({msg:"Blog Added" , success:true})
+
+
+  return NextResponse.json({ msg: "Blog Added", success: true })
 }
 
 // API endpoint to delete blog
